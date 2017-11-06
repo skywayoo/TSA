@@ -1,0 +1,26 @@
+dat_train <- read.table("CBF_TRAIN",header = FALSE,sep = ',')
+dat_test <- read.table("CBF_TEST",header = FALSE,sep=',')
+data <- dat_train[sample(10),]
+data[,1]
+#dtw with knn
+train <- dat_train
+train_label <- train[,1]
+data <- train
+dist_matrix <- dist(data[,-1],window.size = 0,method = "dtw")
+hc <- hclust(dist_matrix,method="complete")
+
+par(mfrow=c(1,1), mar=c(0,1,0,12))
+dend <- as.dendrogram(hc)
+dend <- color_branches(dend, k=3)
+plot(dend,horiz=T)
+#get the index and set color
+index <- rev(hc$labels[c(hc$order)])
+colo=data[index,1]
+b=0
+for(i in 1:length(data[,1]))
+{
+        #x1<x2,y1<y2
+        par(fig = c(.55, 0.9, .9-b,.98-b), mar=c(0.0,0,0.0,0), new=TRUE)
+        plot(1:length(data[1,-1]), data[index[i],-1], type="l", lwd=2, col=colo[i], axes=F)
+        b=b+0.0935
+}
